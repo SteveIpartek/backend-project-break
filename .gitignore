@@ -1,0 +1,36 @@
+# Dependencias de Node
+node_modules/
+.DS_Store # Archivos de macOS
+
+# Variables de entorno
+.env
+
+# Logs y bases de datos locales
+*.log
+*.sqlite
+*.sqlite-journal
+/data/
+
+# Archivos de compilación o temporales
+/dist/
+/build/
+.tmp/
+temp/
+
+# Caché de npm
+npm-debug.log*
+.npm/
+
+# Entornos de desarrollo/IDE específicos
+.vscode/ # Visual Studio Code
+.idea/ # WebStorm/IntelliJ
+*.sublime-project
+*.sublime-workspace
+
+# Resultados de tests
+/coverage/
+
+# Archivos de Cloudinary u otros servicios que no deban ir al repo
+# Si Cloudinary genera algún archivo local de caché, agrégalo aquí.
+# Por ejemplo, si usas `claudinary.env` para credenciales:
+# cloudinary.env

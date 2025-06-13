@@ -28,6 +28,7 @@ exports.upload = multer({
 // --- Funciones del Controlador ---
 
 exports.showProducts = async (req, res) => {
+    console.log(`[DEBUG - showProducts] Accediendo a /products. Ruta original: ${req.originalUrl}`);
     try {
         const { category } = req.query;
         let products;

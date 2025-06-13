@@ -1,5 +1,6 @@
 // Middleware para verificar si el usuario está autenticado
 exports.isAuthenticated = (req, res, next) => {
+     console.log(`[DEBUG - isAuthenticated] Middleware de autenticación activado para ruta: ${req.path}`);
     // Si la sesión existe y contiene un 'userId' (que establecimos al iniciar sesión)
     if (req.session && req.session.userId) {
         return next(); // El usuario está autenticado, permite que la petición continúe

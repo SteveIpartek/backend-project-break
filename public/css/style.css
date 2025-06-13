@@ -16,7 +16,7 @@ body {
 
     /* --- PROPIEDADES PARA LA IMAGEN DE FONDO FIJA --- */
     /* ¡IMPORTANTE! Reemplaza 'URL_DE_TU_IMAGEN_DE_FONDO_AQUI' con la URL real de tu imagen */
-    background-image: url('https://media.istockphoto.com/id/1339047112/es/foto/prototipo-gen%C3%A9rico-de-coche-de-carreras-render-fotorrealista-silueta-sobre-negro.jpg?s=612x612&w=0&k=20&c=N9WDROn4WZqfl02lj2HR4KnEo5cbXC7PwBwPcZ44izE=');
+    background-image: url('URL_DE_TU_IMAGEN_DE_FONDO_AQUI');
     background-size: cover; /* Asegura que la imagen cubra toda la pantalla, escalándola y recortando si es necesario */
     background-attachment: fixed; /* ¡Esto hace que la imagen se quede fija al hacer scroll! */
     background-position: center center; /* Centra la imagen en la pantalla */
@@ -26,7 +26,6 @@ body {
 }
 
 /* Opcional: Sombra al texto para mejorar la legibilidad sobre la imagen de fondo */
-/* Si tu imagen de fondo es muy "ocupada" o colorida, esta sombra ayudará a que el texto destaque. */
 h1, h2, h3, h4, p, a {
     /* text-shadow: 1px 1px 2px rgba(0,0,0,0.6); */ /* Descomenta si quieres una sombra para el texto */
 }
@@ -76,7 +75,7 @@ h1, h2, h3, h4, p, a {
 
 .nav-links li a:hover,
 .nav-links li button:hover {
-    color: #000000; /* ¡Negro puro al pasar el ratón! */
+    color: #ffffff; /* ¡Blanco puro al pasar el ratón! */
     text-decoration: underline; /* Puedes mantener o quitar el subrayado al hover */
 }
 
@@ -92,7 +91,6 @@ h1, h2, h3, h4, p, a {
 /* --- Tarjeta de Producto (Product Card) --- */
 .product-card {
     background-color: white;
-    opacity: 0.85;
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 15px;

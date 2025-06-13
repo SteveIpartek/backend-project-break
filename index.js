@@ -3,6 +3,11 @@
 // Carga las variables de entorno desde el archivo .env
 require('dotenv').config();
 
+// --- LOG DE INICIO DE INDEX.JS ---
+// Este log nos ayuda a confirmar que esta versión del archivo se está cargando.
+console.log('--- Cargando index.js: Verificación de orden de rutas y logs detallados ---');
+// --- FIN LOG DE INICIO ---
+
 const express = require('express');
 const methodOverride = require('method-override'); // Para habilitar PUT y DELETE en formularios HTML
 const session = require('express-session'); // Para gestionar las sesiones de usuario
@@ -51,23 +56,27 @@ app.use(session({
 
 // Primero: Rutas de Autenticación
 // Estas rutas (como /login, /logout) no necesitan autenticación previa.
+console.log('[DEBUG - INDEX] Configurando authRoutes (/)....');
 app.use('/', authRoutes);
 
 // Segundo: Rutas Protegidas (Dashboard)
 // Todas las rutas que empiezan por /dashboard primero pasarán por el middleware isAuthenticated.
 // Si el usuario no está autenticado, isAuthenticated lo redirigirá al login.
+console.log('[DEBUG - INDEX] Configurando dashboard routes (/dashboard) con isAuthenticated...');
 app.use('/dashboard', isAuthenticated, productRoutes);
 
 // Tercero: Rutas Públicas (Tienda y API)
 // Estas rutas no requieren autenticación y son accesibles para todos.
 // Se colocan después de las protegidas para evitar conflictos si una ruta protegida
-// pudiera ser interpretada como una ruta pública general (aunque con /dashboard/products es poco probable).
+// pudiera ser interpretada como una ruta pública general.
+console.log('[DEBUG - INDEX] Configurando public productRoutes (/) y apiRoutes (/)....');
 app.use('/', productRoutes); // Maneja /products, /products/:productId
 app.use('/', apiRoutes);     // Maneja /api/products, /api/products/:productId
 
 // Cuarto: Ruta de Inicio por defecto (última en el orden lógico)
 // Esta es una ruta "catch-all" para la raíz. Solo se ejecutará si ninguna de las rutas anteriores
-// (authRoutes, dashboardRoutes, publicRoutes, apiRoutes) ha manejado la petición.
+// ha manejado la petición.
+console.log('[DEBUG - INDEX] Configurando default root redirect (/)....');
 app.get('/', (req, res) => {
     res.redirect('/products'); // Redirige a la lista de productos de la tienda
 });
@@ -79,6 +88,9 @@ if (process.env.NODE_ENV !== 'test') {
         console.log(`Servidor escuchando en http://localhost:${PORT}`);
     });
 }
+
+// Log al finalizar la configuración de la aplicación
+console.log('--- index.js cargado y Express app configurada completamente. ---');
 
 // Exporta la instancia de la aplicación Express para que pueda ser utilizada en los tests
 module.exports = app;

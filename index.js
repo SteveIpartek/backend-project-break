@@ -1,64 +1,84 @@
-require('dotenv').config(); // Carga las variables de entorno desde .env
+// index.js
+
+// Carga las variables de entorno desde el archivo .env
+require('dotenv').config();
+
 const express = require('express');
-const methodOverride = require('method-override'); // Para PUT y DELETE en formularios HTML
-const session = require('express-session'); // Para gestionar sesiones de usuario (BONUS 4)
-const connectDB = require('./config/db'); // Importa la función de conexión a la DB
+const methodOverride = require('method-override'); // Para habilitar PUT y DELETE en formularios HTML
+const session = require('express-session'); // Para gestionar las sesiones de usuario
 
-// Importa las rutas
-const productRoutes = require('./routes/productRoutes');
-const apiRoutes = require('./routes/apiRoutes'); // BONUS 1
-const authRoutes = require('./routes/authRoutes'); // BONUS 4
+// Importa la función de conexión a la base de datos
+const connectDB = require('./config/db');
 
-// Importa el middleware de autenticación (BONUS 4)
+// Importa las definiciones de rutas
+const productRoutes = require('./routes/productRoutes'); // Rutas para la tienda y el dashboard (HTML)
+const apiRoutes = require('./routes/apiRoutes');         // Rutas para la API (JSON)
+const authRoutes = require('./routes/authRoutes');       // Rutas para la autenticación (login/logout)
+
+// Importa el middleware de autenticación para proteger rutas
 const { isAuthenticated } = require('./middlewares/authMiddleware');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000; // Define el puerto, tomando de .env o usando 3000 por defecto
 
-// --- Conexión a la Base de Datos ---
+// --- 1. Conexión a la Base de Datos ---
 connectDB();
 
-// --- Middlewares Generales ---
-app.use(express.urlencoded({ extended: true })); // Para parsear bodies de formularios (application/x-www-form-urlencoded)
-app.use(express.json()); // Para parsear bodies de peticiones JSON (ej. para la API)
-app.use(methodOverride('_method')); // Permite usar ?_method=PUT/DELETE en URLs de formularios
-app.use(express.static('public')); // Sirve archivos estáticos desde la carpeta 'public'
+// --- 2. Middlewares Generales ---
+// Middleware para parsear bodies de formularios URL-encoded (para datos de formularios HTML)
+app.use(express.urlencoded({ extended: true }));
+// Middleware para parsear bodies de peticiones JSON (útil para la API)
+app.use(express.json());
+// Middleware para sobrescribir métodos HTTP (PUT, DELETE) en formularios HTML con '?_method=PUT'
+app.use(methodOverride('_method'));
+// Middleware para servir archivos estáticos (CSS, JavaScript, imágenes) desde la carpeta 'public'
+app.use(express.static('public'));
 
-// --- Configuración de Sesiones (BONUS 4) ---
+// --- 3. Configuración de Sesiones ---
+// ¡Importante! Este middleware DEBE ir antes de cualquier ruta que necesite acceder a req.session
 app.use(session({
-    secret: process.env.SECRET_KEY || 'supersecretkeydefault', // Clave secreta para firmar la cookie de sesión
+    secret: process.env.SECRET_KEY || 'supersecretkeydefault', // Clave secreta para firmar la cookie de sesión (¡usar una fuerte en .env!)
     resave: false, // No guardar la sesión si no ha cambiado
-    saveUninitialized: false, // No crear sesión para usuarios no autenticados
+    saveUninitialized: false, // No crear sesión para usuarios no autenticados (hasta que se logeen)
     cookie: {
-        secure: process.env.NODE_ENV === 'production', // true en producción (requiere HTTPS)
-        maxAge: 1000 * 60 * 60 * 24 // Cookie expira en 24 horas
+        secure: process.env.NODE_ENV === 'production', // true en producción para HTTPS (cookie solo se envía con HTTPS)
+        maxAge: 1000 * 60 * 60 * 24 // La cookie de sesión expira en 24 horas
     }
 }));
 
-// --- Rutas ---
-// Rutas de autenticación (login/logout)
+// --- 4. ORDEN CRÍTICO DE LAS RUTAS ---
+// El orden en que se definen las rutas es fundamental en Express.
+
+// Primero: Rutas de Autenticación
+// Estas rutas (como /login, /logout) no necesitan autenticación previa.
 app.use('/', authRoutes);
 
-// Rutas del Dashboard (protegidas por autenticación)
-// Todas las rutas que empiezan por /dashboard ahora requerirán que el usuario esté autenticado.
+// Segundo: Rutas Protegidas (Dashboard)
+// Todas las rutas que empiezan por /dashboard primero pasarán por el middleware isAuthenticated.
+// Si el usuario no está autenticado, isAuthenticated lo redirigirá al login.
 app.use('/dashboard', isAuthenticated, productRoutes);
 
-// Rutas de la Tienda Principal y la API (no protegidas)
-app.use('/', productRoutes); // Las rutas de la tienda (ej. /products) son públicas
-app.use('/', apiRoutes);     // Las rutas de la API (ej. /api/products) también son públicas
+// Tercero: Rutas Públicas (Tienda y API)
+// Estas rutas no requieren autenticación y son accesibles para todos.
+// Se colocan después de las protegidas para evitar conflictos si una ruta protegida
+// pudiera ser interpretada como una ruta pública general (aunque con /dashboard/products es poco probable).
+app.use('/', productRoutes); // Maneja /products, /products/:productId
+app.use('/', apiRoutes);     // Maneja /api/products, /api/products/:productId
 
-// Ruta de Inicio por defecto: redirige a la lista de productos de la tienda
+// Cuarto: Ruta de Inicio por defecto (última en el orden lógico)
+// Esta es una ruta "catch-all" para la raíz. Solo se ejecutará si ninguna de las rutas anteriores
+// (authRoutes, dashboardRoutes, publicRoutes, apiRoutes) ha manejado la petición.
 app.get('/', (req, res) => {
-    res.redirect('/products');
+    res.redirect('/products'); // Redirige a la lista de productos de la tienda
 });
 
-// --- Iniciar el Servidor ---
-// Solo inicia el servidor si no estamos en un entorno de test.
-// Esto es útil para que Supertest pueda importar 'app' sin levantar un servidor real.
+// --- 5. Iniciar el Servidor ---
+// El servidor solo se inicia si el entorno no es de prueba (útil para Jest/Supertest).
 if (process.env.NODE_ENV !== 'test') {
     app.listen(PORT, () => {
         console.log(`Servidor escuchando en http://localhost:${PORT}`);
     });
 }
 
-module.exports = app; // Exporta la instancia de app para los tests (BONUS 2)
+// Exporta la instancia de la aplicación Express para que pueda ser utilizada en los tests
+module.exports = app;

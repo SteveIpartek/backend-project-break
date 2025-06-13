@@ -54,32 +54,32 @@ app.use(session({
 // --- 4. ORDEN CRÍTICO DE LAS RUTAS ---
 // El orden en que se definen las rutas es fundamental en Express.
 
-// Primero: Rutas de Autenticación
-// Estas rutas (como /login, /logout) no necesitan autenticación previa.
+// PASO 1: Define las rutas de autenticación que NO necesitan protección.
+// Estas son las primeras en procesarse para permitir el login y logout.
 console.log('[DEBUG - INDEX] Configurando authRoutes (/)....');
-app.use('/', authRoutes);
+app.use('/', authRoutes); // Maneja /login, /logout
 
-// Segundo: Rutas Protegidas (Dashboard)
-// Todas las rutas que empiezan por /dashboard primero pasarán por el middleware isAuthenticated.
-// Si el usuario no está autenticado, isAuthenticated lo redirigirá al login.
-console.log('[DEBUG - INDEX] Configurando dashboard routes (/dashboard) con isAuthenticated...');
-app.use('/dashboard', isAuthenticated, productRoutes);
-
-// Tercero: Rutas Públicas (Tienda y API)
-// Estas rutas no requieren autenticación y son accesibles para todos.
-// Se colocan después de las protegidas para evitar conflictos si una ruta protegida
-// pudiera ser interpretada como una ruta pública general.
+// PASO 2: Define las rutas públicas (Tienda y API) que NO necesitan protección.
+// Estas deben ir antes de CUALQUIER middleware de autenticación GLOBAL.
+// Colocarlas aquí asegura que /products no active isAuthenticated.
 console.log('[DEBUG - INDEX] Configurando public productRoutes (/) y apiRoutes (/)....');
 app.use('/', productRoutes); // Maneja /products, /products/:productId
 app.use('/', apiRoutes);     // Maneja /api/products, /api/products/:productId
 
-// Cuarto: Ruta de Inicio por defecto (última en el orden lógico)
-// Esta es una ruta "catch-all" para la raíz. Solo se ejecutará si ninguna de las rutas anteriores
-// ha manejado la petición.
+// PASO 3: Define la ruta de inicio por defecto.
+// Esta debería ser la última ruta general que maneja el path raíz.
+// Es un "catch-all" para "/" si no ha sido manejado por authRoutes o productRoutes.
 console.log('[DEBUG - INDEX] Configurando default root redirect (/)....');
 app.get('/', (req, res) => {
     res.redirect('/products'); // Redirige a la lista de productos de la tienda
 });
+
+// PASO 4: Finalmente, define las rutas PROTEGIDAS del dashboard.
+// Colocarlas aquí asegura que SOLO las rutas que empiezan con /dashboard
+// activarán el middleware isAuthenticated.
+console.log('[DEBUG - INDEX] Configurando dashboard routes (/dashboard) con isAuthenticated...');
+app.use('/dashboard', isAuthenticated, productRoutes);
+
 
 // --- 5. Iniciar el Servidor ---
 // El servidor solo se inicia si el entorno no es de prueba (útil para Jest/Supertest).

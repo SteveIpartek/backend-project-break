@@ -1,3 +1,6 @@
+/* public/css/style.css */
+
+/* --- Estilos Generales --- */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -12,55 +15,69 @@ body {
     padding: 0 20px;
 }
 
+/* --- Barra de Navegación (Navbar) --- */
 .navbar {
-    background-color: #333;
-    color: white;
+    background-color: #333; /* Fondo oscuro de la barra */
+    color: white; /* Color de texto por defecto en la barra */
     padding: 10px 0;
     text-align: center;
 }
 
 .nav-links {
-    list-style: none;
+    list-style: none; /* Quita los puntos de la lista */
     padding: 0;
     margin: 0;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
+    display: flex; /* Para que los elementos estén en línea */
+    justify-content: center; /* Centra los elementos horizontalmente */
+    gap: 20px; /* Espacio entre los elementos de la lista */
 }
 
-.nav-links li a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
+/* --- ESTILOS DE ENLACES DE NAVEGACIÓN --- */
+.nav-links li a,
+.nav-links li button { /* Aplica a enlaces y botones dentro de la nav-links */
+    color: #aaaaaa; /* Gris claro para el texto por defecto */
+    text-decoration: none; /* Quita el subrayado por defecto */
+    font-weight: bold; /* Texto en negrita */
+    background: none; /* Quita el fondo de los botones */
+    border: none; /* Quita el borde de los botones */
+    cursor: pointer; /* Muestra el cursor de puntero */
+    font-size: 1em; /* Tamaño de fuente normal */
+    padding: 0;
+    transition: color 0.3s ease; /* Transición suave para el cambio de color al hover */
 }
 
-.nav-links li a:hover {
-    text-decoration: underline;
+.nav-links li a:hover,
+.nav-links li button:hover {
+    color: #000000; /* ¡Negro puro al pasar el ratón! */
+    text-decoration: underline; /* Puedes mantener o quitar el subrayado al hover */
 }
 
+/* --- Cuadrícula de Productos (Product Grid) --- */
 .product-grid {
     display: grid;
+    /* Columnas auto-ajustables, mínimo 280px, máximo 1fr */
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
+    gap: 20px; /* Espacio entre las tarjetas de producto */
     margin-top: 20px;
 }
 
+/* --- Tarjeta de Producto (Product Card) --- */
 .product-card {
     background-color: white;
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 15px;
     text-align: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Sombra suave */
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    flex-direction: column; /* Contenido en columna */
+    justify-content: space-between; /* Espacia el contenido */
 }
 
 .product-card img {
     max-width: 100%;
-    height: 200px; /* Altura fija para uniformidad */
-    object-fit: cover; /* Recorta la imagen para que quepa */
+    height: 200px; /* Altura fija para uniformidad de las imágenes */
+    object-fit: cover; /* Recorta la imagen para que quepa sin distorsionarse */
     border-radius: 4px;
     margin-bottom: 10px;
 }
@@ -78,26 +95,26 @@ body {
 
 .product-card .price {
     font-size: 1.3em;
-    color: #e67e22;
+    color: #e67e22; /* Color naranja para el precio */
     font-weight: bold;
     margin-bottom: 15px;
 }
 
 .product-card .button {
     display: inline-block;
-    background-color: #3498db;
+    background-color: #3498db; /* Azul */
     color: white;
     padding: 8px 15px;
     text-decoration: none;
     border-radius: 5px;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease; /* Transición para el hover */
 }
 
 .product-card .button:hover {
-    background-color: #2980b9;
+    background-color: #2980b9; /* Azul más oscuro al hover */
 }
 
-/* Detalle del Producto */
+/* --- Detalle del Producto --- */
 .product-detail {
     background-color: white;
     border: 1px solid #ddd;
@@ -107,7 +124,7 @@ body {
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: center; /* Centra el contenido */
     text-align: center;
 }
 
@@ -121,7 +138,7 @@ body {
 .product-detail h2 {
     font-size: 2em;
     margin-bottom: 10px;
-    color: #34495e;
+    color: #34495e; /* Gris oscuro */
 }
 
 .product-detail p {
@@ -131,14 +148,14 @@ body {
 }
 
 .product-detail strong {
-    color: #2c3e50;
+    color: #2c3e50; /* Gris muy oscuro */
 }
 
 .product-detail .button {
     margin-top: 20px;
 }
 
-/* Formularios */
+/* --- Formularios (Login, Nuevo Producto, Editar Producto) --- */
 .form-container {
     background-color: white;
     border: 1px solid #ddd;
@@ -148,7 +165,7 @@ body {
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     max-width: 600px;
     margin-left: auto;
-    margin-right: auto;
+    margin-right: auto; /* Centra el contenedor del formulario */
 }
 
 .form-container h2 {
@@ -160,7 +177,7 @@ body {
 .form-container form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 15px; /* Espacio entre los elementos del formulario */
 }
 
 .form-container label {
@@ -173,22 +190,23 @@ body {
 .form-container input[type="url"],
 .form-container input[type="number"],
 .form-container textarea,
-.form-container select {
+.form-container select,
+.form-container input[type="file"] { /* Añadido input[type="file"] */
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 1em;
-    box-sizing: border-box; /* Incluir padding en el ancho */
+    box-sizing: border-box; /* Incluye padding y borde en el ancho total */
 }
 
 .form-container textarea {
-    resize: vertical; /* Permitir redimensionar verticalmente */
+    resize: vertical; /* Permite redimensionar verticalmente */
     min-height: 80px;
 }
 
 .form-container button.button {
-    background-color: #28a745;
+    background-color: #28a745; /* Verde para el botón principal */
     color: white;
     border: none;
     padding: 12px 20px;
@@ -199,11 +217,12 @@ body {
 }
 
 .form-container button.button:hover {
-    background-color: #218838;
+    background-color: #218838; /* Verde más oscuro al hover */
 }
 
+/* --- Botones Adicionales --- */
 .button-secondary {
-    background-color: #6c757d;
+    background-color: #6c757d; /* Gris para botones secundarios */
     margin-left: 10px;
 }
 .button-secondary:hover {
@@ -211,7 +230,7 @@ body {
 }
 
 .button-danger {
-    background-color: #dc3545;
+    background-color: #dc3545; /* Rojo para botones de peligro (eliminar) */
     margin-left: 10px;
 }
 .button-danger:hover {
@@ -222,9 +241,10 @@ body {
     margin-top: 20px;
 }
 
+/* --- Mensajes de Error/Notificación --- */
 .error-message {
     color: red;
-    background-color: #ffe0e0;
+    background-color: #ffe0e0; /* Fondo rojo claro */
     border: 1px solid red;
     padding: 10px;
     border-radius: 5px;

@@ -30,14 +30,14 @@ exports.showLoginForm = (req, res) => {
 exports.login = async (req, res) => {
     const { username, password } = req.body;
     const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
-    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD; // Obtenemos la contraseña SIN hashear del .env
+    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD_HASHED; // Obtenemos la contraseña SIN hashear del .env
 
     // En un proyecto real, buscarías al usuario en una base de datos y su contraseña hasheada.
     // Para este ejemplo, comparamos con un usuario y contraseña definidos en .env.
     // Aquí, hasheamos la contraseña de .env EN CADA LOGIN para compararla con la que ingresa el usuario.
     // Esto es para la SIMPLIFICACIÓN del ejemplo. En una aplicación real, el ADMIN_PASSWORD en .env
     // debería ser el hash *ya generado* de la contraseña real, y se compararía directamente ese hash.
-    const isPasswordMatch = await bcrypt.compare(password, await bcrypt.hash(ADMIN_PASSWORD, 10)); // Compara la contraseña ingresada con el hash de la contraseña del .env
+    const isPasswordMatch = await bcrypt.compare(password, await bcrypt.hash(ADMIN_PASSWORD_HASHED)); // Compara la contraseña ingresada con el hash de la contraseña del .env
 
     if (username === ADMIN_USERNAME && isPasswordMatch) {
         req.session.userId = username; // Almacena el nombre de usuario en la sesión

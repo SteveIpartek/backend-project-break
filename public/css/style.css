@@ -16,7 +16,7 @@ body {
 
     /* --- PROPIEDADES PARA LA IMAGEN DE FONDO FIJA --- */
     /* ¡IMPORTANTE! Reemplaza 'URL_DE_TU_IMAGEN_DE_FONDO_AQUI' con la URL real de tu imagen */
-    background-image: url('URL_DE_TU_IMAGEN_DE_FONDO_AQUI');
+    background-image: url('https://media.istockphoto.com/id/1339047112/es/foto/prototipo-gen%C3%A9rico-de-coche-de-carreras-render-fotorrealista-silueta-sobre-negro.jpg?s=612x612&w=0&k=20&c=N9WDROn4WZqfl02lj2HR4KnEo5cbXC7PwBwPcZ44izE=');
     background-size: cover; /* Asegura que la imagen cubra toda la pantalla, escalándola y recortando si es necesario */
     background-attachment: fixed; /* ¡Esto hace que la imagen se quede fija al hacer scroll! */
     background-position: center center; /* Centra la imagen en la pantalla */

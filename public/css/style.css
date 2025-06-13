@@ -1,18 +1,46 @@
 /* public/css/style.css */
 
 /* --- Estilos Generales --- */
+html {
+    /* Opcional: Si quieres que el color de fondo cubra toda la página incluso si el body no tiene altura fija */
+    background-color: #f4f4f4;
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    /* Color de texto por defecto en el body */
     color: #333;
+    min-height: 100vh; /* Asegura que el body ocupa al menos el 100% de la altura de la vista */
+
+    /* --- PROPIEDADES PARA LA IMAGEN DE FONDO FIJA --- */
+    /* ¡IMPORTANTE! Reemplaza 'URL_DE_TU_IMAGEN_DE_FONDO_AQUI' con la URL real de tu imagen */
+    background-image: url('https://media.istockphoto.com/id/1339047112/es/foto/prototipo-gen%C3%A9rico-de-coche-de-carreras-render-fotorrealista-silueta-sobre-negro.jpg?s=612x612&w=0&k=20&c=N9WDROn4WZqfl02lj2HR4KnEo5cbXC7PwBwPcZ44izE=');
+    background-size: cover; /* Asegura que la imagen cubra toda la pantalla, escalándola y recortando si es necesario */
+    background-attachment: fixed; /* ¡Esto hace que la imagen se quede fija al hacer scroll! */
+    background-position: center center; /* Centra la imagen en la pantalla */
+    background-repeat: no-repeat; /* Evita que la imagen se repita (se muestre en mosaico) */
+    /* background-color: #f4f4f4; /* Mantiene este como color de fallback si la imagen no carga */
+    /* --- FIN PROPIEDADES IMAGEN DE FONDO --- */
 }
+
+/* Opcional: Sombra al texto para mejorar la legibilidad sobre la imagen de fondo */
+/* Si tu imagen de fondo es muy "ocupada" o colorida, esta sombra ayudará a que el texto destaque. */
+h1, h2, h3, h4, p, a {
+    /* text-shadow: 1px 1px 2px rgba(0,0,0,0.6); */ /* Descomenta si quieres una sombra para el texto */
+}
+
 
 .container {
     max-width: 1200px;
     margin: 20px auto;
     padding: 0 20px;
+    /* Opcional: Añade un fondo semi-transparente al contenedor principal si el fondo es muy distracting */
+    /* background-color: rgba(255, 255, 255, 0.85); */ /* Fondo blanco semi-transparente */
+    /* border-radius: 8px; */ /* Bordes redondeados si añades fondo */
+    /* box-shadow: 0 4px 10px rgba(0,0,0,0.2); */ /* Sombra para el contenedor */
+    /* padding: 30px; */ /* Más padding si añades fondo al contenedor */
 }
 
 /* --- Barra de Navegación (Navbar) --- */

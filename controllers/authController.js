@@ -1,12 +1,14 @@
-const bcrypt = require('bcryptjs'); // Para comparar contraseñas de forma segura
+// controllers/authController.js
+
+const bcrypt = require('bcryptjs');
 const baseHtml = require('../helpers/baseHtml');
 const getNavBar = require('../helpers/getNavBar');
 
 // Muestra el formulario de login
 exports.showLoginForm = (req, res) => {
     const message = req.query.message || ''; // Captura mensajes de error/éxito de la URL
-    // No mostramos la barra de navegación para el login
-    const navBar = getNavBar(false);
+    const navBar = getNavBar(false); // No mostrar la barra de navegación en la página de login
+
     const loginFormHtml = `
         <div class="form-container">
             <h2>Iniciar Sesión</h2>
@@ -28,23 +30,43 @@ exports.showLoginForm = (req, res) => {
 
 // Procesa el intento de login
 exports.login = async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password } = req.body; // 'username' y 'password' son los valores del formulario
+    
+    // --- VERIFICACIÓN CRÍTICA DE LAS VARIABLES DE ENTORNO ---
+    // Aseguramos que las variables esenciales estén cargadas de .env (en Render)
     const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
-    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD_HASHED; // Obtenemos la contraseña SIN hashear del .env
+    const ADMIN_PASSWORD_HASHED = process.env.ADMIN_PASSWORD_HASHED; // <-- ¡Esta es la variable clave que usamos ahora!
+    const SECRET_KEY = process.env.SECRET_KEY;
 
-    // En un proyecto real, buscarías al usuario en una base de datos y su contraseña hasheada.
-    // Para este ejemplo, comparamos con un usuario y contraseña definidos en .env.
-    // Aquí, hasheamos la contraseña de .env EN CADA LOGIN para compararla con la que ingresa el usuario.
-    // Esto es para la SIMPLIFICACIÓN del ejemplo. En una aplicación real, el ADMIN_PASSWORD en .env
-    // debería ser el hash *ya generado* de la contraseña real, y se compararía directamente ese hash.
-    const isPasswordMatch = await bcrypt.compare(password, await bcrypt.hash(ADMIN_PASSWORD_HASHED)); // Compara la contraseña ingresada con el hash de la contraseña del .env
+    if (!ADMIN_USERNAME || !ADMIN_PASSWORD_HASHED || !SECRET_KEY) {
+        console.error('ERROR CRÍTICO: Variables de entorno de autenticación (ADMIN_USERNAME, ADMIN_PASSWORD_HASHED, SECRET_KEY) no están definidas. Revisa tu configuración en Render.');
+        // Devuelve un error 500 al cliente si hay un problema de configuración del servidor
+        return res.status(500).send('Error interno del servidor: Configuración de autenticación incompleta.');
+    }
+    // --- FIN DE LA VERIFICACIÓN CRÍTICA ---
 
+    let isPasswordMatch = false;
+    try {
+        // Compara la contraseña en texto plano que el usuario introdujo ('password')
+        // con el hash pre-generado que hemos guardado en la variable de entorno ('ADMIN_PASSWORD_HASHED')
+        isPasswordMatch = await bcrypt.compare(password, ADMIN_PASSWORD_HASHED);
+    } catch (bcryptError) {
+        // Captura cualquier error que pueda ocurrir durante la comparación de bcrypt
+        console.error('Error durante la comparación de contraseñas (bcrypt.compare):', bcryptError);
+        return res.status(500).send('Error interno en el proceso de autenticación.');
+    }
+
+    // Lógica de autenticación
     if (username === ADMIN_USERNAME && isPasswordMatch) {
-        req.session.userId = username; // Almacena el nombre de usuario en la sesión
-        req.session.isAuthenticated = true; // Marca la sesión como autenticada
-        res.redirect('/dashboard'); // Redirige al dashboard si las credenciales son correctas
+        // Si las credenciales coinciden, establece la sesión
+        req.session.userId = username;
+        req.session.isAuthenticated = true;
+        console.log('Login exitoso para el usuario:', username); // Log para depuración
+        res.redirect('/dashboard'); // Redirige al dashboard
     } else {
-        res.redirect('/login?message=Usuario o contraseña incorrectos'); // Redirige al login con mensaje de error
+        // Si las credenciales no coinciden
+        console.log('Login fallido: Usuario o contraseña incorrectos.'); // Log para depuración
+        res.redirect('/login?message=Usuario o contraseña incorrectos'); // Redirige de nuevo al login con un mensaje
     }
 };
 
@@ -56,6 +78,7 @@ exports.logout = (req, res) => {
             console.error('Error al destruir la sesión:', err);
             return res.redirect('/dashboard'); // Si hay un error, intentar redirigir de todos modos
         }
-        res.redirect('/login?message=Has cerrado sesión correctamente'); // Redirige al login con mensaje de éxito
+        // Redirige al login con un mensaje de éxito
+        res.redirect('/login?message=Has cerrado sesión correctamente');
     });
 };
